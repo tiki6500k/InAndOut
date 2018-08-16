@@ -1,6 +1,8 @@
+const CARD_NUMBER = 160729450
+
 function goIn(onDone) {
 	var parameters = {};
-    parameters.card_number = 123456;
+    parameters.card_number = CARD_NUMBER;
     parameters.inout = 1;
     System.ExcuteCommand("Index.Index", "Check_InOUT", parameters, function (returnData) {
         onWorkDone("in", returnData);
@@ -9,7 +11,7 @@ function goIn(onDone) {
 
 function goOut(onDone) {
 	var parameters = {};
-    parameters.card_number = 123456;
+    parameters.card_number = CARD_NUMBER;
     parameters.inout = 0;
     System.ExcuteCommand("Index.Index", "Check_InOUT", parameters, function (returnData) {
     	onWorkDone("out", returnData);

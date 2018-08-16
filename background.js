@@ -27,16 +27,11 @@ function alarmHandler (alarm) {
 }
 
 function inWork () {
-	goIn(onWorkDone);
+	goIn();
 }
 
 function outWork () {
-	goOut(onWorkDone);
-}
-
-// {"msg_code":"0001" for success, and the others for fail, "msg_desc":string data to describe what situation we got}
-function onWorkDone (name, returnData) {
-	console.log(name + " got response: " + JSON.stringify(returnData));
+	goOut();
 }
 
 // -----------------------------  -----------------------------

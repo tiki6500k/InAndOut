@@ -96,7 +96,8 @@ function startTomorrowAlarm () {
 // {"name":"string name", "alarmInfo":object}
 function startAlarm (info) {
 	chrome.alarms.create(info.name, info.alarmInfo);
-	console.log("added alarm: " + JSON.stringify(info))
+	console.log("added alarm: " + JSON.stringify(info));
+	// alert("added alarm: " + JSON.stringify(info));
 }
 
 function backupAlarms () {
@@ -106,7 +107,10 @@ function backupAlarms () {
 			var alarm = alarms[i];
 			setting[alarm.name] = alarm.scheduledTime;
 		}
-		chrome.storage.sync.set({"alarms":setting}, function() {console.log("backup done")});
+		
+		chrome.storage.sync.set({"alarms":setting}, function() {
+			console.log("backup done")
+		});
 	});
 }
 // -----------------------------  -----------------------------

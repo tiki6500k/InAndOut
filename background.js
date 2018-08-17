@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 'use strict';
-const ENABLE_DAY_OF_WEEK = [1, 2, 3, 4, 5];
+const DEFAULT_ENABLE_DAY_OF_WEEK = [1, 2, 3, 4, 5];
 const MORNING_START_HOURS = 9;
 const MORNING_START_MINUTES = 25;
 const MORNING_RANDOM_MINUTES_RANGE = 33;
@@ -35,18 +35,28 @@ function outWork () {
 }
 
 // -----------------------------  -----------------------------
+function refreshBeforeWork () {
 
+	chrome.storage.sync.get("weekday", function(enables) {
+		if (undefined == enables.weekday) {
+			enabledDaysOfWeek = DEFAULT_ENABLE_DAY_OF_WEEK;
+		} else {
+			enabledDaysOfWeek = enables.weekday;
+		}
+		dailyWork();
+	})
+}
 
 function dailyWork () {
-	chrome.alarms.clearAll();
-	startTomorrowAlarm();
 
 	var nowDate = new Date();
 
-	// see if we need to start
-	if ( !(nowDate.getDay() in ENABLE_DAY_OF_WEEK) ) {
+	// check enable
+	if (checkEnable(nowDate.getDay())) { 
 		return;
 	}
+
+	startTomorrowAlarm();
 
 	var nowHours = nowDate.getHours();
 
@@ -77,6 +87,21 @@ function dailyWork () {
 		startAlarm(info);
 
 	}
+	backupStorage();
+}
+
+function checkEnable (dayNumber) {
+	if (dayNumber in enabledDaysOfWeek) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function initWeekdayEnable () {
+	chrome.storage.sync.set({"weekday":DEFAULT_ENABLE_DAY_OF_WEEK}, function() {
+			console.log("weekday initialed")
+	});
 }
 
 function startTomorrowAlarm () {
@@ -100,15 +125,15 @@ function startAlarm (info) {
 	// alert("added alarm: " + JSON.stringify(info));
 }
 
-function backupAlarms () {
+function backupStorage () {
 	chrome.alarms.getAll(function(alarms) {
-		var setting = {};
+		var plan = {};
 		for (var i = 0; i < alarms.length; i++) {
 			var alarm = alarms[i];
-			setting[alarm.name] = alarm.scheduledTime;
+			plan[alarm.name] = alarm.scheduledTime;
 		}
-		
-		chrome.storage.sync.set({"alarms":setting}, function() {
+
+		chrome.storage.sync.set({"alarms":plan, "weekday":enabledDaysOfWeek}, function() {
 			console.log("backup done")
 		});
 	});
@@ -116,13 +141,17 @@ function backupAlarms () {
 // -----------------------------  -----------------------------
 
 function main() {
-	chrome.alarms.clearAll();
 	registAlarmHandler();
 	dailyWork();
-	backupAlarms();
 }
 
+
+var enabledDaysOfWeek;
 chrome.runtime.onInstalled.addListener(function() {
+	// retrive checked days first
+	enabledDaysOfWeek = DEFAULT_ENABLE_DAY_OF_WEEK;
+	chrome.alarms.clearAll();
+	chrome.storage.sync.clear();
 	main();
 });
 

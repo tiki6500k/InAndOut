@@ -19,8 +19,12 @@ function goOut(onDone) {
 
 }
 
+function goOptions() {
+    chrome.runtime.openOptionsPage();
+}
+
 // {"msg_code":"0001" for success, and the others for fail, "msg_desc":string data to describe what situation we got}
 function onWorkDone (name, returnData) {
-    // console.log(name + " got response: " + JSON.stringify(returnData));
-    alert(name + " got response: " + JSON.stringify(returnData));
+    console.log(name + " got response: " + JSON.stringify(returnData));
+    // alert(name + " got response: " + JSON.stringify(returnData));
 }

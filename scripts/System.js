@@ -26,8 +26,8 @@ this.System.WebServices = function (handlerName, method, parameter, AsyncCallbac
         dataType: "json",
         async: false,
         error: function (request) {
-            alert("error");
-            debugger;
+            // alert("error");
+            // debugger;
         },
         success: function (data) {
             if (AsyncCallback != undefined) {

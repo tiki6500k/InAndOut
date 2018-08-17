@@ -47,6 +47,7 @@
 
 function registButtonEvent () {
 	document.addEventListener('DOMContentLoaded', function () {
+		document.getElementById("GoOptions").addEventListener('click', goOptions);
 		document.getElementById("GoIn").addEventListener('click', goIn);
 		document.getElementById("GoOut").addEventListener('click', goOut);
 	});
